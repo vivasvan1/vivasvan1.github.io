@@ -17,7 +17,7 @@ import { BsBriefcase } from "react-icons/bs";
 
 import { useTheme } from "../theme-provider";
 import { cn } from "@/lib/utils";
-import { FaBlog, FaBlogger } from "react-icons/fa";
+import { FaBlogger } from "react-icons/fa";
 type Props = {};
 
 function SiteHeader({}: Props) {
