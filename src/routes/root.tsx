@@ -8,7 +8,7 @@ function Projects({}: Props) {
   return (
     <div className="min-w-screen min-h-screen flex">
       <SiteHeader />
-      <div className="flex flex-col max-sm:ml-14 justify-between w-full">
+      <div className="flex flex-col max-sm:pl-14 justify-between w-full">
         <Outlet />
         <SiteFooter />
       </div>

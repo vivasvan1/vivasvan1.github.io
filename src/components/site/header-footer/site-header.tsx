@@ -10,18 +10,14 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  Book,
-  Package,
-  Settings,
-  User2,
-} from "lucide-react";
+import { Book, Package, Settings, User2 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 import { BsBriefcase } from "react-icons/bs";
 
 import { useTheme } from "../theme-provider";
 import { cn } from "@/lib/utils";
+import { FaBlog, FaBlogger } from "react-icons/fa";
 type Props = {};
 
 function SiteHeader({}: Props) {
@@ -34,7 +30,12 @@ function SiteHeader({}: Props) {
         <nav className="flex flex-col items-center gap-4 px-2 py-3 sm:py-5">
           <Link
             to="/"
-            className="flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
+            className={cn(
+              location.pathname === "/"
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground",
+              "flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8"
+            )}
           >
             <User2 className="h-5 w-5" />
             <span className="sr-only">Vivasvan</span>
@@ -45,9 +46,9 @@ function SiteHeader({}: Props) {
                 to="/projects"
                 className={cn(
                   location.pathname === "/projects"
-                    ? "bg-accent text-accent-foreground"
+                    ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground",
-                  "flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:text-foreground md:h-8 md:w-8"
+                  "flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8"
                 )}
               >
                 <BsBriefcase className="h-5 w-5" />
@@ -62,9 +63,9 @@ function SiteHeader({}: Props) {
                 to="/books"
                 className={cn(
                   location.pathname === "/books"
-                    ? "bg-accent text-accent-foreground"
+                    ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground",
-                  "flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:text-foreground md:h-8 md:w-8"
+                  "flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8"
                 )}
               >
                 <Book className="h-5 w-5" />
@@ -77,7 +78,7 @@ function SiteHeader({}: Props) {
             <TooltipTrigger asChild>
               <Link
                 to="/skills"
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors md:h-8 md:w-8"
               >
                 <Package className="h-5 w-5" />
                 <span className="sr-only">Skills</span>
@@ -85,23 +86,23 @@ function SiteHeader({}: Props) {
             </TooltipTrigger>
             <TooltipContent side="right">Skills</TooltipContent>
           </Tooltip>
-          {/* <Tooltip delayDuration={0}>
+          <Tooltip delayDuration={0}>
             <TooltipTrigger asChild>
-              <a
-                href="#"
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+              <Link
+                to="/blogs"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors md:h-8 md:w-8"
               >
-                <Users2 className="h-5 w-5" />
+                <FaBlogger className="h-5 w-5" />
                 <span className="sr-only"></span>
-              </a>
+              </Link>
             </TooltipTrigger>
             <TooltipContent side="right"></TooltipContent>
-          </Tooltip> */}
+          </Tooltip>
           {/* <Tooltip delayDuration={0}>
             <TooltipTrigger asChild>
               <a
                 href="#"
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors md:h-8 md:w-8"
               >
                 <LineChart className="h-5 w-5" />
                 <span className="sr-only">Analytics</span>
