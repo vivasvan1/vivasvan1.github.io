@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { Button } from "./components/ui/button";
 import { toast } from "sonner";
 import { TbBrandGithub, TbBrandLinkedin } from "react-icons/tb";
+import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
 
 type Props = {};
 
@@ -18,10 +19,15 @@ function App({}: Props) {
     <div className="flex flex-col gap-5 p-3 py-10">
       <Card className="w-full">
         <CardHeader>
-          <CardTitle className="">I'm Vivasvan Patel</CardTitle>
+          <Avatar className="w-32 h-32">
+            <AvatarImage src="/imgs/avatar.webp" />
+            <AvatarFallback>V</AvatarFallback>
+          </Avatar>
+          
+          <CardTitle className="">Vivasvan Patel</CardTitle>
           <CardDescription>
-            I am a seasoned Computer Vision Researcher with a passion in
-            Frontend Development.
+            A seasoned Computer Vision Researcher with a passion in Frontend
+            Development.
           </CardDescription>
         </CardHeader>
       </Card>
