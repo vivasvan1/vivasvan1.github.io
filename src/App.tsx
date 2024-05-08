@@ -15,10 +15,7 @@ type Props = {};
 
 function App({}: Props) {
   return (
-    <div className="py-10 p-3 flex flex-col gap-5">
-      <div className="text-center py-10">
-        <CardTitle>About Me</CardTitle>
-      </div>
+    <div className="flex flex-col gap-5 p-3 py-10">
       <Card className="w-full">
         <CardHeader>
           <CardTitle className="">I'm Vivasvan Patel</CardTitle>
@@ -32,7 +29,7 @@ function App({}: Props) {
         <Card className="hover:bg-muted">
           <CardHeader>
             <CardTitle className="flex w-full items-center justify-between">
-              Work / Projects <MoveRight className="w-5 h-5" />
+              Work / Projects <MoveRight className="h-5 w-5" />
             </CardTitle>
           </CardHeader>
         </Card>
@@ -45,10 +42,10 @@ function App({}: Props) {
         <Card className="hover:bg-muted">
           <CardHeader>
             <CardTitle className="flex w-full items-center justify-between">
-              <span className="flex gap-1 justify-center items-center">
-                <Paperclip className="w-5 h-5 mr-1" /> Cheatsheet
+              <span className="flex items-center justify-center gap-1">
+                <Paperclip className="mr-1 h-5 w-5" /> Cheatsheet
               </span>{" "}
-              <MoveRight className="w-5 h-5" />
+              <MoveRight className="h-5 w-5" />
             </CardTitle>
           </CardHeader>
         </Card>
@@ -61,7 +58,7 @@ function App({}: Props) {
           <div className="flex flex-col gap-2">
             <div className="flex justify-between">
               <span>
-                <Phone className="w-5 h-5" />
+                <Phone className="h-5 w-5" />
               </span>{" "}
               <div className="flex gap-1">
                 <a target="_blank" href="tel:+919727790271">
@@ -70,27 +67,25 @@ function App({}: Props) {
                 <Button
                   size={"xs"}
                   onClick={() => {
-                    navigator.clipboard
-                      .writeText("+919727790271")
-                      .then((_) => {
-                        toast.success("Phone number copied");
-                      });
+                    navigator.clipboard.writeText("+919727790271").then((_) => {
+                      toast.success("Phone number copied");
+                    });
                   }}
                   variant={"outline"}
                 >
-                  <Copy className="w-3 h-3" />
+                  <Copy className="h-3 w-3" />
                 </Button>
               </div>
             </div>
             <div className="flex justify-between">
               <span>
-                <Mail className="w-5 h-5" />
+                <Mail className="h-5 w-5" />
               </span>{" "}
               <div className="flex gap-1">
                 <a
                   target="_blank"
                   href="mailto:vivasvanpatel40@gmail.com"
-                  className="max-sm:max-w-36 truncate overflow-hidden underline text-blue-400"
+                  className="overflow-hidden truncate text-blue-400 underline max-sm:max-w-36"
                 >
                   <span className="">vivasvanpatel40@gmail.com</span>
                 </a>
@@ -105,19 +100,19 @@ function App({}: Props) {
                   }}
                   variant={"outline"}
                 >
-                  <Copy className="w-3 h-3" />
+                  <Copy className="h-3 w-3" />
                 </Button>
               </div>
             </div>
             <div className="flex justify-between">
               <span>
-                <TbBrandGithub className="w-5 h-5" />
+                <TbBrandGithub className="h-5 w-5" />
               </span>{" "}
               <div className="flex gap-1">
                 <a
                   target="_blank"
                   href="https://github.com/vivasvan1"
-                  className="max-sm:max-w-36 truncate overflow-hidden underline text-blue-400"
+                  className="overflow-hidden truncate text-blue-400 underline max-sm:max-w-36"
                 >
                   <span className="">github.com/vivasvan1</span>
                 </a>
@@ -132,19 +127,19 @@ function App({}: Props) {
                   }}
                   variant={"outline"}
                 >
-                  <Copy className="w-3 h-3" />
+                  <Copy className="h-3 w-3" />
                 </Button>
               </div>
             </div>
             <div className="flex justify-between">
               <span>
-                <TbBrandLinkedin className="w-5 h-5" />
+                <TbBrandLinkedin className="h-5 w-5" />
               </span>{" "}
               <div className="flex gap-1">
                 <a
                   target="_blank"
                   href="https://www.linkedin.com/in/vivasvan-patel-a0b132139"
-                  className="max-sm:max-w-36 truncate overflow-hidden underline text-blue-400"
+                  className="overflow-hidden truncate text-blue-400 underline max-sm:max-w-36"
                 >
                   <span className="">
                     linkedin.com/in/vivasvan-patel-a0b132139
@@ -155,7 +150,7 @@ function App({}: Props) {
                   onClick={() => {
                     navigator.clipboard
                       .writeText(
-                        "https://www.linkedin.com/in/vivasvan-patel-a0b132139"
+                        "https://www.linkedin.com/in/vivasvan-patel-a0b132139",
                       )
                       .then((_) => {
                         toast.success("Link copied");
@@ -163,7 +158,7 @@ function App({}: Props) {
                   }}
                   variant={"outline"}
                 >
-                  <Copy className="w-3 h-3" />
+                  <Copy className="h-3 w-3" />
                 </Button>
               </div>
             </div>
