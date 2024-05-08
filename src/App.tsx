@@ -23,9 +23,8 @@ function App({}: Props) {
         <CardHeader>
           <CardTitle className="">I'm Vivasvan Patel</CardTitle>
           <CardDescription>
-            I am a seasoned Computer Vision Researcher with a passion of
-            Frontend Development, with a strong foundation in developing
-            innovative AI solutions.
+            I am a seasoned Computer Vision Researcher with a passion in
+            Frontend Development.
           </CardDescription>
         </CardHeader>
       </Card>
