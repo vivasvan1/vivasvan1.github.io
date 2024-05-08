@@ -15,8 +15,8 @@ type Props = {};
 
 function App({}: Props) {
   return (
-    <div className="p-3 py-10 w-full flex flex-col gap-5">
-      <div className="text-center">
+    <div className="py-10 p-3 flex flex-col gap-5">
+      <div className="text-center py-10">
         <CardTitle>About Me</CardTitle>
       </div>
       <Card className="w-full">

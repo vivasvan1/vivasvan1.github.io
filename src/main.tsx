@@ -10,6 +10,8 @@ import Root from "./routes/root.tsx";
 import Projects from "./routes/projects/page.tsx";
 import { Toaster } from "sonner";
 import Books from "./routes/books/page.tsx";
+import Skills from "./routes/skills/page.tsx";
+import Blogs from "./routes/blogs/page.tsx";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +30,17 @@ const router = createBrowserRouter([
         path: "/books",
         element: <Books />,
       },
+
+      {
+        path: "/skills",
+        element: <Skills />,
+      },
+
+
+      {
+        path: "/blogs",
+        element: <Blogs />,
+      },
     ],
   },
 ]);
@@ -40,5 +53,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Toaster />
       </ThemeProvider>
     </TooltipProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

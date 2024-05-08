@@ -6,10 +6,10 @@ type Props = {};
 
 function Root({}: Props) {
   return (
-    <div className="flex justify-center">
-      <div className="max-sm:min-w-[100dvw] sm:max-w-[30rem] min-h-screen flex">
+    <div className="flex justify-center bg-white bg-dot-black/[0.2]  dark:bg-black dark:bg-dot-white/[0.2] ">
+      <div className="flex min-h-screen max-sm:min-w-[100dvw] sm:max-w-[40rem]">
         <SiteHeader />
-        <div className="flex flex-col max-sm:pl-14 sm:pt-14 justify-between w-full">
+        <div className="flex w-full flex-col justify-between sm:max-w-[40rem] pt-14">
           <Outlet />
           <SiteFooter />
         </div>

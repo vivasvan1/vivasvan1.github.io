@@ -4,6 +4,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -33,7 +34,7 @@ const projects = [
     description: `At Vaato, I spearhead the development of an AI-powered contextual conversation partner designed to revolutionize interview preparation. My role involves:`,
     images: [
       "/imgs/projects/vaato/homepage.jpg",
-      "/imgs/projects/vaato/dashboard.jpg",
+      "/imgs/projects/vaato/dashboard.png",
     ],
     videos: [],
     link: "https://vaato.ultimateworld.io",
@@ -58,28 +59,43 @@ const projects = [
     name: "ArchiDocx",
     description: `Single handledly developed an Architecture Project Management System for simple client architect communication and organisation. Client UI has taken inspiration from Google Drive design for easy to learn and use.`,
     images: [
-      "/imgs/projects/archidocx/phone_home.png",
       "/imgs/projects/archidocx/project_view.png",
       "/imgs/projects/archidocx/recent_files_view.png",
       "/imgs/projects/archidocx/team_management.png",
+      "/imgs/projects/archidocx/phone_home.png",
     ],
     videos: [], // Add a walkthrough video if available
     link: "https://www.archidocx.com/", // Add the company or project link if available
     logo: "", // Add project logo if available
-    time: "Jan 23 - May 23",
+    time: "Jan 24 - Present",
     team: "Lavingya Consulatants",
+  },
+  {
+    name: "PolarProject",
+    description: `Build a project showcase website for an non-profit organization. The website showcase an unique, innovative, futuristic 3d design. `,
+    images: [
+      "/imgs/projects/polar-projects/home.jpg",
+      "/imgs/projects/polar-projects/inside.jpg",
+    ],
+    videos: [], // Add a walkthrough video if available
+    link: "https://www.polarprojects.io/", // Add the company or project link if available
+    logo: "", // Add project logo if available
+    time: "Nov 23 - Dec 23",
+    team: "Sahil Patel",
   },
 ];
 
 function Projects({}: Props) {
   return (
-    <div className="p-3 py-10 w-full flex flex-col gap-5">
-      <div className="text-center">
+    <div className="py-10">
+      <div className="py-10 text-center">
         <CardTitle>Work / Projects</CardTitle>
       </div>
-      {projects.map((project) => (
-        <Project project={project} />
-      ))}
+      <div className="flex w-full flex-col gap-5 p-3 sm:grid sm:grid-cols-2">
+        {projects.map((project) => (
+          <Project project={project} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -91,11 +107,11 @@ type PProps = {
 function Project({ project }: PProps) {
   const [isShowMore, setIsShowMore] = useState(false);
   return (
-    <Card className="hover:bg-muted">
+    <Card className="space-between flex flex-col hover:bg-muted">
       <CardHeader>
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <CardTitle className="flex  items-center gap-4 font-light">
-            <Avatar className="text-base border">
+            <Avatar className="border text-base">
               <AvatarImage src={project.logo} alt="logo" />
               <AvatarFallback>
                 {project.name.at(0)?.toUpperCase() ?? "A"}
@@ -112,20 +128,11 @@ function Project({ project }: PProps) {
                 }}
                 variant={"outline"}
               >
-                <ExternalLink className="w-4 h-4" />
+                <ExternalLink className="h-4 w-4" />
               </Button>
             )}
           </div>
         </div>
-        <div className="!my-5">
-          <div className="flex justify-between items-center">
-            <div className="text-sm text-muted-foreground ">{project.team}</div>
-          </div>
-          <div className="flex justify-between items-center">
-            <div className="text-sm text-muted-foreground ">{project.time}</div>
-          </div>
-        </div>
-
         {project.description && (
           <>
             <CardDescription
@@ -146,7 +153,7 @@ function Project({ project }: PProps) {
           </>
         )}
       </CardHeader>
-      <CardContent>
+      <CardContent className="my-auto">
         <Carousel className="w-full">
           <CarouselContent>
             {project.images.map((image, index) => (
@@ -161,6 +168,12 @@ function Project({ project }: PProps) {
           </CarouselContent>
         </Carousel>
       </CardContent>
+      <CardFooter className="">
+        <div className="flex w-full items-center justify-between text-sm text-muted-foreground">
+          <div>{project.team}</div>
+          <div>{project.time}</div>
+        </div>
+      </CardFooter>
     </Card>
   );
 }
