@@ -18,29 +18,30 @@ import { BsBriefcase } from "react-icons/bs";
 import { useTheme } from "../theme-provider";
 import { cn } from "@/lib/utils";
 import { FaBlogger } from "react-icons/fa";
+import {isMobile} from "react-device-detect";
+
 type Props = {};
 
 function SiteHeader({}: Props) {
   const { setTheme } = useTheme();
   const location = useLocation();
-
   return (
     <>
-      <aside className="fixed inset-y-0 left-0 z-10 w-14 flex md:hidden flex-col border-r bg-background">
-        <nav className="flex flex-col items-center gap-4 px-2 py-3 sm:py-5">
+      <div className="fixed max-sm:inset-y-0 max-sm:left-0 z-10 w-14 sm:w-[30rem] flex flex-col sm:flex-row sm:justify-between max-sm:border-r sm:border-b bg-background">
+        <div className="flex flex-col sm:flex-row items-center gap-4 px-2 py-3 sm:py-5">
           <Link
             to="/"
             className={cn(
               location.pathname === "/"
                 ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground",
-              "flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8"
+              "flex h-9 w-9 items-center justify-center rounded-lg transition-colors sm:h-8 sm:w-8"
             )}
           >
             <User2 className="h-5 w-5" />
             <span className="sr-only">Vivasvan</span>
           </Link>
-          <Tooltip delayDuration={0}>
+          <Tooltip delayDuration={0} >
             <TooltipTrigger asChild>
               <Link
                 to="/projects"
@@ -48,16 +49,16 @@ function SiteHeader({}: Props) {
                   location.pathname === "/projects"
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground",
-                  "flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8"
+                  "flex h-9 w-9 items-center justify-center rounded-lg transition-colors sm:h-8 sm:w-8"
                 )}
               >
                 <BsBriefcase className="h-5 w-5" />
                 <span className="sr-only">Projects</span>
               </Link>
             </TooltipTrigger>
-            <TooltipContent side="right">Projects</TooltipContent>
+            <TooltipContent side={isMobile?"right":"bottom"}>Projects</TooltipContent>
           </Tooltip>
-          <Tooltip delayDuration={0}>
+          <Tooltip delayDuration={0} >
             <TooltipTrigger asChild>
               <Link
                 to="/books"
@@ -65,55 +66,55 @@ function SiteHeader({}: Props) {
                   location.pathname === "/books"
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground",
-                  "flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8"
+                  "flex h-9 w-9 items-center justify-center rounded-lg transition-colors sm:h-8 sm:w-8"
                 )}
               >
                 <Book className="h-5 w-5" />
                 <span className="sr-only">Books</span>
               </Link>
             </TooltipTrigger>
-            <TooltipContent side="right">Books</TooltipContent>
+            <TooltipContent side={isMobile?"right":"bottom"}>Books</TooltipContent>
           </Tooltip>
-          <Tooltip delayDuration={0}>
+          <Tooltip delayDuration={0} >
             <TooltipTrigger asChild>
               <Link
                 to="/skills"
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors md:h-8 md:w-8"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors sm:h-8 sm:w-8"
               >
                 <Package className="h-5 w-5" />
                 <span className="sr-only">Skills</span>
               </Link>
             </TooltipTrigger>
-            <TooltipContent side="right">Skills</TooltipContent>
+            <TooltipContent side={isMobile?"right":"bottom"}>Skills</TooltipContent>
           </Tooltip>
-          <Tooltip delayDuration={0}>
+          <Tooltip delayDuration={0} >
             <TooltipTrigger asChild>
               <Link
                 to="/blogs"
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors md:h-8 md:w-8"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors sm:h-8 sm:w-8"
               >
                 <FaBlogger className="h-5 w-5" />
                 <span className="sr-only"></span>
               </Link>
             </TooltipTrigger>
-            <TooltipContent side="right"></TooltipContent>
+            <TooltipContent side={isMobile?"right":"bottom"}></TooltipContent>
           </Tooltip>
-          {/* <Tooltip delayDuration={0}>
+          {/* <Tooltip delayDuration={0} >
             <TooltipTrigger asChild>
               <a
                 href="#"
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors md:h-8 md:w-8"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors sm:h-8 sm:w-8"
               >
                 <LineChart className="h-5 w-5" />
                 <span className="sr-only">Analytics</span>
               </a>
             </TooltipTrigger>
-            <TooltipContent side="right">Analytics</TooltipContent>
+            <TooltipContent side={isMobile?"right":"bottom"}>Analytics</TooltipContent>
           </Tooltip> */}
-        </nav>
-        <nav className="mt-auto flex flex-col items-center gap-4 px-2 py-3 sm:py-5">
+        </div>
+        <div className="max-sm:mt-auto flex flex-col sm:flex-row items-center gap-4 px-2 py-3 sm:py-5">
           <DropdownMenu>
-            <Tooltip delayDuration={0}>
+            <Tooltip delayDuration={0} >
               <TooltipTrigger asChild>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="icon">
@@ -123,7 +124,7 @@ function SiteHeader({}: Props) {
                   </Button>
                 </DropdownMenuTrigger>
               </TooltipTrigger>
-              <TooltipContent side="right">Settings</TooltipContent>
+              <TooltipContent side={isMobile?"right":"bottom"}>Settings</TooltipContent>
             </Tooltip>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => setTheme("light")}>
@@ -137,8 +138,8 @@ function SiteHeader({}: Props) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </nav>
-      </aside>
+        </div>
+      </div>
     </>
   );
 }
