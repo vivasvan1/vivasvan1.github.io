@@ -12,11 +12,22 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
 } from "@/components/ui/carousel";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 
 type Props = {};
+
+type ProjectType = (typeof projects)[0];
 
 const projects = [
   {
@@ -86,28 +97,60 @@ const projects = [
 ];
 
 function Projects({}: Props) {
+  const [selectedProject, setSelectedProject] = useState<ProjectType | null>(null);
+
   return (
-    <div className="py-10">
-      <div className="py-10 text-center">
-        <CardTitle>Work / Projects</CardTitle>
+    <>
+      <div className="py-10">
+        <div className="py-10 text-center">
+          <CardTitle>Work / Projects</CardTitle>
+        </div>
+        <div className="flex w-full flex-col gap-5 p-3 sm:grid sm:grid-cols-2">
+          {projects.map((project) => (
+            <Project
+              key={project.name}
+              project={project}
+              onOpen={() => {
+                setSelectedProject(project);
+              }}
+            />
+          ))}
+        </div>
       </div>
-      <div className="flex w-full flex-col gap-5 p-3 sm:grid sm:grid-cols-2">
-        {projects.map((project) => (
-          <Project project={project} />
-        ))}
-      </div>
-    </div>
+      <ProjectModal
+        project={selectedProject}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            setSelectedProject(null);
+          }
+        }}
+      />
+    </>
   );
 }
 
 type PProps = {
-  project: (typeof projects)[0];
+  project: ProjectType;
+  onOpen: () => void;
 };
 
-function Project({ project }: PProps) {
+function Project({ project, onOpen }: PProps) {
   const [isShowMore, setIsShowMore] = useState(false);
+  const projectLink = getProjectLink(project.link);
+
   return (
-    <Card className="space-between flex flex-col hover:bg-muted">
+    <Card
+      className="space-between flex cursor-pointer flex-col transition-colors hover:bg-muted"
+      onClick={onOpen}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onOpen();
+        }
+      }}
+      role="button"
+      tabIndex={0}
+    >
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex  items-center gap-4 font-light">
@@ -120,11 +163,19 @@ function Project({ project }: PProps) {
             {project.name}
           </CardTitle>
           <div className="flex gap-1">
-            {project.link && (
+            {projectLink && (
               <Button
                 size={"sm"}
+                type="button"
+                aria-label={`Open ${project.name} website`}
                 onClick={() => {
-                  window.open(project.link, "_blank");
+                  window.open(projectLink, "_blank", "noopener,noreferrer");
+                }}
+                onMouseDown={(event) => {
+                  event.stopPropagation();
+                }}
+                onClickCapture={(event) => {
+                  event.stopPropagation();
                 }}
                 variant={"outline"}
               >
@@ -142,8 +193,15 @@ function Project({ project }: PProps) {
             </CardDescription>
             <CardDescription className="">
               <button
+                type="button"
                 onClick={() => {
                   setIsShowMore(!isShowMore);
+                }}
+                onMouseDown={(event) => {
+                  event.stopPropagation();
+                }}
+                onClickCapture={(event) => {
+                  event.stopPropagation();
                 }}
                 className="w-max underline"
               >
@@ -156,12 +214,12 @@ function Project({ project }: PProps) {
       <CardContent className="my-auto">
         <Carousel className="w-full">
           <CarouselContent>
-            {project.images.map((image, index) => (
-              <CarouselItem key={index} onClick={() => {}} className="m-auto">
+            {project.images.map((image) => (
+              <CarouselItem key={image} className="m-auto">
                 <img
                   src={image}
                   alt={project.name}
-                  className="w-full object-cover"
+                  className="h-64 w-full rounded-md object-cover"
                 />
               </CarouselItem>
             ))}
@@ -176,6 +234,89 @@ function Project({ project }: PProps) {
       </CardFooter>
     </Card>
   );
+}
+
+type ModalProps = {
+  project: ProjectType | null;
+  onOpenChange: (isOpen: boolean) => void;
+};
+
+function ProjectModal({ project, onOpenChange }: ModalProps) {
+  const projectLink = getProjectLink(project?.link);
+
+  return (
+    <Dialog open={Boolean(project)} onOpenChange={onOpenChange}>
+      <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
+        {project ? (
+          <div className="space-y-6">
+            <DialogHeader className="pr-10">
+              <DialogTitle className="flex items-center gap-4 text-2xl font-medium">
+                <Avatar className="border text-base">
+                  <AvatarImage src={project.logo} alt={`${project.name} logo`} />
+                  <AvatarFallback>
+                    {project.name.at(0)?.toUpperCase() ?? "A"}
+                  </AvatarFallback>
+                </Avatar>
+                {project.name}
+              </DialogTitle>
+              <DialogDescription className="flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">
+                <span>{project.team}</span>
+                <span>{project.time}</span>
+              </DialogDescription>
+            </DialogHeader>
+
+            <Carousel className="mx-auto w-full max-w-3xl">
+              <CarouselContent>
+                {project.images.map((image) => (
+                  <CarouselItem key={image}>
+                    <img
+                      src={image}
+                      alt={project.name}
+                      className="max-h-[60vh] w-full rounded-lg object-cover"
+                    />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              {project.images.length > 1 && (
+                <>
+                  <CarouselPrevious className="left-4" />
+                  <CarouselNext className="right-4" />
+                </>
+              )}
+            </Carousel>
+
+            <div className="space-y-4">
+              <p className="whitespace-pre-line text-sm leading-7 text-muted-foreground">
+                {project.description}
+              </p>
+              {projectLink && (
+                <div className="flex justify-end">
+                  <Button asChild>
+                    <a href={projectLink} target="_blank" rel="noreferrer">
+                      Visit Project
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </a>
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : null}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function getProjectLink(link?: string) {
+  if (!link) {
+    return "";
+  }
+
+  if (link.startsWith("http://") || link.startsWith("https://")) {
+    return link;
+  }
+
+  return `https://${link}`;
 }
 
 export default Projects;
