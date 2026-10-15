@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   aria-hidden="true"
+   role="img"
+   className="text-sky-500 transform -rotate-[70deg] -translate-x-[12px] -translate-y-[10px] stroke-sky-600"
+   width="20.16763"
+   height="20.016845"
+   preserveAspectRatio="xMidYMid"
+   viewBox="0 0 13.785803 13.666653"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <path
+     d="M 0.1411847,0.1501109 A 0.5,0.5 0 0 1 0.6970538,0.0411725 L 13.484699,5.562019 a 0.5,0.5 0 0 1 0.0028,0.9170222 L 8.7435392,8.5707864 6.7525278,13.359307 a 0.5,0.5 0 0 1 -0.9158836,0.01577 L 0.0441348,0.7081783 a 0.5,0.5 0 0 1 0.097061,-0.5570675 z"
+     id="path1"
+     style="fill:#0ea5e9;fill-opacity:1" />
+</svg>

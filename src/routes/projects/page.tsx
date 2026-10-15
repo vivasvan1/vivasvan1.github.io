@@ -22,6 +22,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ZoomableImage } from "@/components/ui/zoomable-image";
 import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 
@@ -269,11 +270,7 @@ function ProjectModal({ project, onOpenChange }: ModalProps) {
               <CarouselContent>
                 {project.images.map((image) => (
                   <CarouselItem key={image}>
-                    <img
-                      src={image}
-                      alt={project.name}
-                      className="max-h-[60vh] w-full rounded-lg object-cover"
-                    />
+                    <ZoomableImage src={image} alt={project.name} />
                   </CarouselItem>
                 ))}
               </CarouselContent>
