@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  type CarouselApi,
   Carousel,
   CarouselContent,
   CarouselItem,
@@ -23,8 +24,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ZoomableImage } from "@/components/ui/zoomable-image";
+import { cn } from "@/lib/utils";
 import { ExternalLink } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {};
 
@@ -243,7 +245,28 @@ type ModalProps = {
 };
 
 function ProjectModal({ project, onOpenChange }: ModalProps) {
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const [currentSlide, setCurrentSlide] = useState(0);
   const projectLink = getProjectLink(project?.link);
+
+  useEffect(() => {
+    if (!carouselApi) return;
+    setCurrentSlide(carouselApi.selectedScrollSnap());
+    const onSelect = () => {
+      setCurrentSlide(carouselApi.selectedScrollSnap());
+    };
+    carouselApi.on("select", onSelect);
+    return () => {
+      carouselApi.off("select", onSelect);
+    };
+  }, [carouselApi]);
+
+  useEffect(() => {
+    if (project && carouselApi) {
+      carouselApi.scrollTo(0, true);
+      setCurrentSlide(0);
+    }
+  }, [project, carouselApi]);
 
   return (
     <Dialog open={Boolean(project)} onOpenChange={onOpenChange}>
@@ -260,34 +283,69 @@ function ProjectModal({ project, onOpenChange }: ModalProps) {
                 </Avatar>
                 {project.name}
               </DialogTitle>
-              <DialogDescription className="flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">
-                <span>{project.team}</span>
-                <span>{project.time}</span>
+              <DialogDescription className="flex flex-wrap items-center gap-2 pt-1 text-sm">
+                <span className="rounded-md border bg-muted/60 px-2 py-0.5 text-xs font-medium text-foreground">
+                  {project.team}
+                </span>
+                <span className="text-muted-foreground">•</span>
+                <span className="text-muted-foreground">{project.time}</span>
               </DialogDescription>
             </DialogHeader>
 
-            <Carousel className="mx-auto w-full max-w-3xl">
-              <CarouselContent>
-                {project.images.map((image) => (
-                  <CarouselItem key={image}>
-                    <ZoomableImage src={image} alt={project.name} />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              {project.images.length > 1 && (
-                <>
-                  <CarouselPrevious className="left-4" />
-                  <CarouselNext className="right-4" />
-                </>
-              )}
-            </Carousel>
+            <div className="relative mx-auto w-full max-w-3xl">
+              <Carousel
+                setApi={setCarouselApi}
+                opts={{ watchDrag: false }}
+                className="w-full"
+              >
+                <CarouselContent>
+                  {project.images.map((image, idx) => (
+                    <CarouselItem key={image}>
+                      <ZoomableImage
+                        src={image}
+                        alt={`${project.name} screenshot ${idx + 1}`}
+                        isActive={currentSlide === idx}
+                      />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                {project.images.length > 1 && (
+                  <>
+                    <CarouselPrevious className="left-3 top-1/2 z-30 -translate-y-1/2 border-border/80 bg-background/85 shadow-md backdrop-blur-md hover:bg-background disabled:opacity-0 sm:left-4" />
+                    <CarouselNext className="right-3 top-1/2 z-30 -translate-y-1/2 border-border/80 bg-background/85 shadow-md backdrop-blur-md hover:bg-background disabled:opacity-0 sm:right-4" />
+                  </>
+                )}
+              </Carousel>
 
-            <div className="space-y-4">
+              {project.images.length > 1 && (
+                <div className="mt-3 flex items-center justify-center gap-1.5">
+                  {project.images.map((img, idx) => (
+                    <button
+                      key={img}
+                      type="button"
+                      onClick={() => carouselApi?.scrollTo(idx)}
+                      className={cn(
+                        "h-2 rounded-full transition-all duration-300",
+                        currentSlide === idx
+                          ? "w-6 bg-primary"
+                          : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/60"
+                      )}
+                      aria-label={`Jump to image ${idx + 1}`}
+                    />
+                  ))}
+                  <span className="ml-2 text-xs tabular-nums text-muted-foreground">
+                    {currentSlide + 1} / {project.images.length}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-4 pt-1">
               <p className="whitespace-pre-line text-sm leading-7 text-muted-foreground">
                 {project.description}
               </p>
               {projectLink && (
-                <div className="flex justify-end">
+                <div className="flex justify-end pt-2">
                   <Button asChild>
                     <a href={projectLink} target="_blank" rel="noreferrer">
                       Visit Project
