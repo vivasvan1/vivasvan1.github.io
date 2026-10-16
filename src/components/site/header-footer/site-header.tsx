@@ -27,7 +27,7 @@ function SiteHeader({}: Props) {
   const location = useLocation();
   return (
     <>
-      <div className="fixed z-10 bg-background w-full max-w-[40rem] flex flex-row justify-between border-b">
+      <div className="fixed z-20 bg-background/80 backdrop-blur-md w-full max-w-[40rem] flex flex-row justify-between border-b">
         <div className="flex items-center gap-4 px-2 py-3 flex-row sm:py-5">
           <Link
             to="/"
