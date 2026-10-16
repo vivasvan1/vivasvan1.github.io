@@ -12,6 +12,7 @@ import { Toaster } from "sonner";
 import Books from "./routes/books/page.tsx";
 import Skills from "./routes/skills/page.tsx";
 import Blogs from "./routes/blogs/page.tsx";
+import BlogPostPage from "./routes/blogs/post.tsx";
 
 const router = createBrowserRouter([
   {
@@ -36,10 +37,13 @@ const router = createBrowserRouter([
         element: <Skills />,
       },
 
-
       {
         path: "/blogs",
         element: <Blogs />,
+      },
+      {
+        path: "/blogs/:slug",
+        element: <BlogPostPage />,
       },
     ],
   },
