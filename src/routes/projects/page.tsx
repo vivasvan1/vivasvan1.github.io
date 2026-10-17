@@ -34,6 +34,18 @@ type ProjectType = (typeof projects)[0];
 
 const projects = [
   {
+    name: "Pathfinder",
+    description: `Pioneer agentic system at Eagleview. Built Eagleview's agentic system for interacting with general data sources and enrichment of EV data with external data sources, extracting actionable insights on top of raw pixels so customers can get the most out of geospatial/aerial data via natural language.
+
+Currently working on embedding image-text data for spatial images, Agentic AI development, and Generative AI workflows.`,
+    images: ["/imgs/projects/pathfinder/pathfinder1.jpeg"],
+    videos: [],
+    link: "https://www.eagleview.com/",
+    logo: "",
+    time: "Jun 24 - Present",
+    team: "Eagleview AI / MLOps Team",
+  },
+  {
     name: "K|Lens GmbH",
     description: `At K|Lens GmbH, I contributed to the development of the company's innovative vision system, focusing on depth estimation, real-world semantic segmentation, and object classification. My work involved researching and developing AI algorithms to address complex visual perception challenges, integrating these findings with software solutions, and presenting our research outcomes in industry conferences.`,
     images: ["/imgs/projects/klens/showcase.png"], // Add images showing the technology or conference presentations
