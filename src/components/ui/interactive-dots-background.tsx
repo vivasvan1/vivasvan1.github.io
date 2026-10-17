@@ -6,12 +6,10 @@ interface Dot {
   originY: number;
   x: number;
   y: number;
-  vx: number;
-  vy: number;
   radius: number;
-  currentRadius: number;
+  targetRadius: number;
   opacity: number;
-  currentOpacity: number;
+  targetOpacity: number;
 }
 
 export function InteractiveDotsBackground() {
@@ -22,13 +20,12 @@ export function InteractiveDotsBackground() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d", { alpha: true });
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     let animationFrameId: number;
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
-
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     let isDark = document.documentElement.classList.contains("dark");
@@ -40,11 +37,9 @@ export function InteractiveDotsBackground() {
       attributeFilter: ["class"],
     });
 
-    const SPACING = 24;
-    const INTERACTION_RADIUS = 140;
-    const MAX_PUSH = 18;
-    const SPRING_FACTOR = 0.12;
-    const DAMPING = 0.82;
+    const SPACING = 28;
+    const RADIUS = 130;
+    const MAX_PUSH = 22;
 
     let dots: Dot[] = [];
 
@@ -52,9 +47,11 @@ export function InteractiveDotsBackground() {
       dots = [];
       const cols = Math.ceil(width / SPACING) + 2;
       const rows = Math.ceil(height / SPACING) + 2;
-
       const offsetX = ((width % SPACING) - SPACING) / 2;
       const offsetY = ((height % SPACING) - SPACING) / 2;
+
+      const baseOpacity = isDark ? 0.25 : 0.22;
+      const baseRadius = 1.5;
 
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
@@ -65,18 +62,16 @@ export function InteractiveDotsBackground() {
             originY,
             x: originX,
             y: originY,
-            vx: 0,
-            vy: 0,
-            radius: 1.25,
-            currentRadius: 1.25,
-            opacity: 0.15,
-            currentOpacity: 0.15,
+            radius: baseRadius,
+            targetRadius: baseRadius,
+            opacity: baseOpacity,
+            targetOpacity: baseOpacity,
           });
         }
       }
     };
 
-    const resize = () => {
+    const handleResize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
       canvas.width = width * dpr;
@@ -88,168 +83,125 @@ export function InteractiveDotsBackground() {
       initDots();
     };
 
-    resize();
-    window.addEventListener("resize", resize);
+    handleResize();
+    window.addEventListener("resize", handleResize);
 
     const mouse = {
       x: -1000,
       y: -1000,
-      targetX: -1000,
-      targetY: -1000,
       active: false,
     };
 
-    const onPointerMove = (e: PointerEvent) => {
-      mouse.targetX = e.clientX;
-      mouse.targetY = e.clientY;
-      mouse.active = true;
-    };
+    const handlePointerMove = (e: MouseEvent | TouchEvent) => {
+      const clientX = "touches" in e ? e.touches[0]?.clientX : e.clientX;
+      const clientY = "touches" in e ? e.touches[0]?.clientY : e.clientY;
 
-    const onPointerLeave = () => {
-      mouse.active = false;
-    };
-
-    const onTouchMove = (e: TouchEvent) => {
-      if (e.touches.length > 0) {
-        mouse.targetX = e.touches[0].clientX;
-        mouse.targetY = e.touches[0].clientY;
+      if (clientX !== undefined && clientY !== undefined) {
+        mouse.x = clientX;
+        mouse.y = clientY;
         mouse.active = true;
       }
     };
 
-    const onTouchEnd = () => {
+    const handlePointerLeave = () => {
       mouse.active = false;
+      mouse.x = -1000;
+      mouse.y = -1000;
     };
 
-    window.addEventListener("pointermove", onPointerMove, { passive: true });
-    window.addEventListener("pointerleave", onPointerLeave, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: true });
-    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    window.addEventListener("mousemove", handlePointerMove);
+    window.addEventListener("mouseleave", handlePointerLeave);
+    window.addEventListener("touchmove", handlePointerMove, { passive: true });
+    window.addEventListener("touchend", handlePointerLeave);
 
-    const render = (time: number) => {
-
-      // Smooth mouse interpolation
-      if (mouse.active) {
-        mouse.x += (mouse.targetX - mouse.x) * 0.2;
-        mouse.y += (mouse.targetY - mouse.y) * 0.2;
-      } else {
-        mouse.x += (-1000 - mouse.x) * 0.1;
-        mouse.y += (-1000 - mouse.y) * 0.1;
-      }
-
+    const render = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // Subtle ambient cursor spotlight glow
-      if (mouse.active && mouse.x > -100 && mouse.x < width + 100) {
+      const baseOpacity = isDark ? 0.25 : 0.22;
+      const baseRadius = 1.5;
+      const dotColor = isDark ? "255, 255, 255" : "0, 0, 0";
+
+      // Cursor spotlight circle
+      if (mouse.active && mouse.x > 0 && mouse.x < width && mouse.y > 0 && mouse.y < height) {
         const glow = ctx.createRadialGradient(
           mouse.x,
           mouse.y,
           0,
           mouse.x,
           mouse.y,
-          INTERACTION_RADIUS * 1.5,
+          RADIUS * 1.2
         );
-        if (isDark) {
-          glow.addColorStop(0, "rgba(255, 255, 255, 0.05)");
-          glow.addColorStop(0.5, "rgba(255, 255, 255, 0.015)");
-          glow.addColorStop(1, "rgba(255, 255, 255, 0)");
-        } else {
-          glow.addColorStop(0, "rgba(0, 0, 0, 0.04)");
-          glow.addColorStop(0.5, "rgba(0, 0, 0, 0.015)");
-          glow.addColorStop(1, "rgba(0, 0, 0, 0)");
-        }
+        glow.addColorStop(0, isDark ? "rgba(255, 255, 255, 0.07)" : "rgba(0, 0, 0, 0.05)");
+        glow.addColorStop(1, "transparent");
         ctx.fillStyle = glow;
         ctx.beginPath();
-        ctx.arc(mouse.x, mouse.y, INTERACTION_RADIUS * 1.5, 0, Math.PI * 2);
+        ctx.arc(mouse.x, mouse.y, RADIUS * 1.2, 0, Math.PI * 2);
         ctx.fill();
       }
-
-      const baseR = isDark ? 255 : 0;
-      const baseG = isDark ? 255 : 0;
-      const baseB = isDark ? 255 : 0;
-      const baseOpacity = isDark ? 0.14 : 0.12;
-
-      // Idle wave time factor
-      const waveTime = time * 0.0015;
 
       for (let i = 0; i < dots.length; i++) {
         const dot = dots[i];
 
-        // Microscopic organic breathing when idle
-        const idleOffsetX =
-          Math.sin(waveTime + dot.originX * 0.02 + dot.originY * 0.01) * 0.5;
-        const idleOffsetY =
-          Math.cos(waveTime + dot.originX * 0.01 + dot.originY * 0.02) * 0.5;
-
-        let targetX = dot.originX + idleOffsetX;
-        let targetY = dot.originY + idleOffsetY;
+        let targetX = dot.originX;
+        let targetY = dot.originY;
+        let targetRadius = baseRadius;
         let targetOpacity = baseOpacity;
-        let targetRadius = dot.radius;
 
         if (mouse.active) {
           const dx = dot.originX - mouse.x;
           const dy = dot.originY - mouse.y;
-          const distSq = dx * dx + dy * dy;
-          const radiusSq = INTERACTION_RADIUS * INTERACTION_RADIUS;
+          const dist = Math.hypot(dx, dy);
 
-          if (distSq < radiusSq) {
-            const dist = Math.sqrt(distSq);
-            const force = Math.pow(1 - dist / INTERACTION_RADIUS, 1.6);
-            const nx = dist === 0 ? 0 : dx / dist;
-            const ny = dist === 0 ? 0 : dy / dist;
+          if (dist < RADIUS) {
+            const force = Math.pow(1 - dist / RADIUS, 1.5);
+            const angle = Math.atan2(dy, dx);
 
-            // Push dot away from cursor with elastic spring
-            targetX += nx * force * MAX_PUSH;
-            targetY += ny * force * MAX_PUSH;
+            // Push dots away from cursor
+            targetX += Math.cos(angle) * force * MAX_PUSH;
+            targetY += Math.sin(angle) * force * MAX_PUSH;
 
-            // Increase brightness and radius near cursor
-            targetOpacity = baseOpacity + force * (isDark ? 0.7 : 0.65);
-            targetRadius = dot.radius + force * 1.35;
+            // Expand and brighten dots near cursor
+            targetRadius = baseRadius + force * 1.8;
+            targetOpacity = baseOpacity + force * (isDark ? 0.65 : 0.6);
           }
         }
 
-        // Spring-damper physics towards target
-        const ax = (targetX - dot.x) * SPRING_FACTOR;
-        const ay = (targetY - dot.y) * SPRING_FACTOR;
-        dot.vx = (dot.vx + ax) * DAMPING;
-        dot.vy = (dot.vy + ay) * DAMPING;
-        dot.x += dot.vx;
-        dot.y += dot.vy;
-
-        dot.currentOpacity += (targetOpacity - dot.currentOpacity) * 0.18;
-        dot.currentRadius += (targetRadius - dot.currentRadius) * 0.18;
+        // Smooth spring physics interpolation
+        dot.x += (targetX - dot.x) * 0.16;
+        dot.y += (targetY - dot.y) * 0.16;
+        dot.radius += (targetRadius - dot.radius) * 0.18;
+        dot.opacity += (targetOpacity - dot.opacity) * 0.18;
 
         // Draw dot
         ctx.beginPath();
-        ctx.arc(dot.x, dot.y, dot.currentRadius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${baseR}, ${baseG}, ${baseB}, ${dot.currentOpacity})`;
+        ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${dotColor}, ${dot.opacity.toFixed(3)})`;
         ctx.fill();
       }
 
       animationFrameId = requestAnimationFrame(render);
     };
 
-    let isVisible = true;
-    const handleVisibilityChange = () => {
-      isVisible = document.visibilityState === "visible";
-      if (isVisible) {
+    animationFrameId = requestAnimationFrame(render);
+
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") {
+        cancelAnimationFrame(animationFrameId);
         animationFrameId = requestAnimationFrame(render);
       } else {
         cancelAnimationFrame(animationFrameId);
       }
     };
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    animationFrameId = requestAnimationFrame(render);
+    document.addEventListener("visibilitychange", handleVisibility);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-      window.removeEventListener("resize", resize);
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerleave", onPointerLeave);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("touchend", onTouchEnd);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("mousemove", handlePointerMove);
+      window.removeEventListener("mouseleave", handlePointerLeave);
+      window.removeEventListener("touchmove", handlePointerMove);
+      window.removeEventListener("touchend", handlePointerLeave);
+      document.removeEventListener("visibilitychange", handleVisibility);
       observer.disconnect();
     };
   }, [theme]);
@@ -258,7 +210,7 @@ export function InteractiveDotsBackground() {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className="fixed inset-0 pointer-events-none -z-10 block h-full w-full select-none"
+      className="fixed inset-0 pointer-events-none z-0 block h-full w-full select-none"
     />
   );
 }
