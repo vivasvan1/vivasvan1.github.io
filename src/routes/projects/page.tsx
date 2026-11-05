@@ -23,9 +23,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ZoomableImage } from "@/components/ui/zoomable-image";
 import { cn } from "@/lib/utils";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Image as ImageIcon, PlayCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type Props = {};
@@ -103,8 +105,10 @@ Currently working on embedding image-text data for spatial images, Agentic AI de
       "/imgs/projects/polar-projects/home.jpg",
       "/imgs/projects/polar-projects/inside.jpg",
     ],
-    videos: [], // Add a walkthrough video if available
-    link: "https://www.polarprojects.io/", // Add the company or project link if available
+    videos: [
+      "https://www.youtube.com/embed/AqFzhVaE39c?si=N0Jf1egLOM55DyZa",
+    ],
+    link: "https://polarlight.vercel.app/", // Add the company or project link if available
     logo: "", // Add project logo if available
     time: "Nov 23 - Dec 23",
     team: "Sahil Patel",
@@ -244,7 +248,15 @@ function Project({ project, onOpen }: PProps) {
       <CardFooter className="">
         <div className="flex w-full items-center justify-between text-sm text-muted-foreground">
           <div>{project.team}</div>
-          <div>{project.time}</div>
+          <div className="flex items-center gap-2">
+            {project.videos && project.videos.length > 0 && (
+              <Badge variant="secondary" className="gap-1 text-xs">
+                <PlayCircle className="h-3.5 w-3.5" />
+                <span>Video</span>
+              </Badge>
+            )}
+            <div>{project.time}</div>
+          </div>
         </div>
       </CardFooter>
     </Card>
@@ -260,6 +272,9 @@ function ProjectModal({ project, onOpenChange }: ModalProps) {
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [currentSlide, setCurrentSlide] = useState(0);
   const projectLink = getProjectLink(project?.link);
+
+  const hasVideos = Boolean(project?.videos && project.videos.length > 0);
+  const hasImages = Boolean(project?.images && project.images.length > 0);
 
   useEffect(() => {
     if (!carouselApi) return;
@@ -279,6 +294,82 @@ function ProjectModal({ project, onOpenChange }: ModalProps) {
       setCurrentSlide(0);
     }
   }, [project, carouselApi]);
+
+  const renderVideos = () => {
+    if (!project || !project.videos || project.videos.length === 0) return null;
+    return (
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
+        {project.videos.map((video, idx) => (
+          <div
+            key={video}
+            className="aspect-video w-full overflow-hidden rounded-lg border bg-black shadow-md"
+          >
+            <iframe
+              src={video}
+              title={`${project.name} video walkthrough ${idx + 1}`}
+              className="h-full w-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderCarousel = () => {
+    if (!project || project.images.length === 0) return null;
+    return (
+      <div className="relative mx-auto w-full max-w-3xl">
+        <Carousel
+          setApi={setCarouselApi}
+          opts={{ watchDrag: false }}
+          className="w-full"
+        >
+          <CarouselContent>
+            {project.images.map((image, idx) => (
+              <CarouselItem key={image}>
+                <ZoomableImage
+                  src={image}
+                  alt={`${project.name} screenshot ${idx + 1}`}
+                  isActive={currentSlide === idx}
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          {project.images.length > 1 && (
+            <>
+              <CarouselPrevious className="left-3 top-1/2 z-30 -translate-y-1/2 border-border/80 bg-background/85 shadow-md backdrop-blur-md hover:bg-background disabled:opacity-0 sm:left-4" />
+              <CarouselNext className="right-3 top-1/2 z-30 -translate-y-1/2 border-border/80 bg-background/85 shadow-md backdrop-blur-md hover:bg-background disabled:opacity-0 sm:right-4" />
+            </>
+          )}
+        </Carousel>
+
+        {project.images.length > 1 && (
+          <div className="mt-3 flex items-center justify-center gap-1.5">
+            {project.images.map((img, idx) => (
+              <button
+                key={img}
+                type="button"
+                onClick={() => carouselApi?.scrollTo(idx)}
+                className={cn(
+                  "h-2 rounded-full transition-all duration-300",
+                  currentSlide === idx
+                    ? "w-6 bg-primary"
+                    : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/60"
+                )}
+                aria-label={`Jump to image ${idx + 1}`}
+              />
+            ))}
+            <span className="ml-2 text-xs tabular-nums text-muted-foreground">
+              {currentSlide + 1} / {project.images.length}
+            </span>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <Dialog open={Boolean(project)} onOpenChange={onOpenChange}>
@@ -304,53 +395,32 @@ function ProjectModal({ project, onOpenChange }: ModalProps) {
               </DialogDescription>
             </DialogHeader>
 
-            <div className="relative mx-auto w-full max-w-3xl">
-              <Carousel
-                setApi={setCarouselApi}
-                opts={{ watchDrag: false }}
-                className="w-full"
-              >
-                <CarouselContent>
-                  {project.images.map((image, idx) => (
-                    <CarouselItem key={image}>
-                      <ZoomableImage
-                        src={image}
-                        alt={`${project.name} screenshot ${idx + 1}`}
-                        isActive={currentSlide === idx}
-                      />
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                {project.images.length > 1 && (
-                  <>
-                    <CarouselPrevious className="left-3 top-1/2 z-30 -translate-y-1/2 border-border/80 bg-background/85 shadow-md backdrop-blur-md hover:bg-background disabled:opacity-0 sm:left-4" />
-                    <CarouselNext className="right-3 top-1/2 z-30 -translate-y-1/2 border-border/80 bg-background/85 shadow-md backdrop-blur-md hover:bg-background disabled:opacity-0 sm:right-4" />
-                  </>
-                )}
-              </Carousel>
-
-              {project.images.length > 1 && (
-                <div className="mt-3 flex items-center justify-center gap-1.5">
-                  {project.images.map((img, idx) => (
-                    <button
-                      key={img}
-                      type="button"
-                      onClick={() => carouselApi?.scrollTo(idx)}
-                      className={cn(
-                        "h-2 rounded-full transition-all duration-300",
-                        currentSlide === idx
-                          ? "w-6 bg-primary"
-                          : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/60"
-                      )}
-                      aria-label={`Jump to image ${idx + 1}`}
-                    />
-                  ))}
-                  <span className="ml-2 text-xs tabular-nums text-muted-foreground">
-                    {currentSlide + 1} / {project.images.length}
-                  </span>
+            {hasVideos && hasImages ? (
+              <Tabs defaultValue="video" className="mx-auto w-full max-w-3xl">
+                <div className="mb-4 flex justify-center">
+                  <TabsList>
+                    <TabsTrigger value="video" className="gap-1.5">
+                      <PlayCircle className="h-4 w-4" />
+                      Video Demo
+                    </TabsTrigger>
+                    <TabsTrigger value="images" className="gap-1.5">
+                      <ImageIcon className="h-4 w-4" />
+                      Screenshots ({project.images.length})
+                    </TabsTrigger>
+                  </TabsList>
                 </div>
-              )}
-            </div>
+                <TabsContent value="video" className="mt-0">
+                  {renderVideos()}
+                </TabsContent>
+                <TabsContent value="images" className="mt-0">
+                  {renderCarousel()}
+                </TabsContent>
+              </Tabs>
+            ) : hasVideos ? (
+              renderVideos()
+            ) : (
+              renderCarousel()
+            )}
 
             <div className="space-y-4 pt-1">
               <p className="whitespace-pre-line text-sm leading-7 text-muted-foreground">
