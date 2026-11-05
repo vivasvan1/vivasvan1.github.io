@@ -252,7 +252,11 @@ function Project({ project, onOpen }: PProps) {
             {project.videos && project.videos.length > 0 && (
               <Badge variant="secondary" className="gap-1 text-xs">
                 <PlayCircle className="h-3.5 w-3.5" />
-                <span>Video</span>
+                <span>
+                  {project.videos.length > 1
+                    ? `${project.videos.length} Videos`
+                    : "Video"}
+                </span>
               </Badge>
             )}
             <div>{project.time}</div>
@@ -271,10 +275,15 @@ type ModalProps = {
 function ProjectModal({ project, onOpenChange }: ModalProps) {
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [selectedVideoIndex, setSelectedVideoIndex] = useState(0);
   const projectLink = getProjectLink(project?.link);
 
   const hasVideos = Boolean(project?.videos && project.videos.length > 0);
   const hasImages = Boolean(project?.images && project.images.length > 0);
+
+  useEffect(() => {
+    setSelectedVideoIndex(0);
+  }, [project]);
 
   useEffect(() => {
     if (!carouselApi) return;
@@ -297,23 +306,38 @@ function ProjectModal({ project, onOpenChange }: ModalProps) {
 
   const renderVideos = () => {
     if (!project || !project.videos || project.videos.length === 0) return null;
+    const currentVideo = project.videos[selectedVideoIndex] ?? project.videos[0];
+
     return (
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
-        {project.videos.map((video, idx) => (
-          <div
-            key={video}
-            className="aspect-video w-full overflow-hidden rounded-lg border bg-black shadow-md"
-          >
-            <iframe
-              src={video}
-              title={`${project.name} video walkthrough ${idx + 1}`}
-              className="h-full w-full border-0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            />
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-3">
+        {project.videos.length > 1 && (
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {project.videos.map((_, idx) => (
+              <Button
+                key={idx}
+                type="button"
+                size="sm"
+                variant={selectedVideoIndex === idx ? "default" : "outline"}
+                className="h-8 gap-1.5 rounded-full px-3 text-xs transition-all"
+                onClick={() => setSelectedVideoIndex(idx)}
+              >
+                <PlayCircle className="h-3.5 w-3.5" />
+                <span>Video {idx + 1}</span>
+              </Button>
+            ))}
           </div>
-        ))}
+        )}
+        <div className="aspect-video w-full overflow-hidden rounded-lg border bg-black shadow-md">
+          <iframe
+            key={currentVideo}
+            src={currentVideo}
+            title={`${project.name} video walkthrough ${selectedVideoIndex + 1}`}
+            className="h-full w-full border-0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          />
+        </div>
       </div>
     );
   };
@@ -401,7 +425,9 @@ function ProjectModal({ project, onOpenChange }: ModalProps) {
                   <TabsList>
                     <TabsTrigger value="video" className="gap-1.5">
                       <PlayCircle className="h-4 w-4" />
-                      Video Demo
+                      {project.videos.length > 1
+                        ? `Videos (${project.videos.length})`
+                        : "Video Demo"}
                     </TabsTrigger>
                     <TabsTrigger value="images" className="gap-1.5">
                       <ImageIcon className="h-4 w-4" />
