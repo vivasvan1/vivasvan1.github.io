@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0c10" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#030712" />
+    </linearGradient>
+
+    <linearGradient id="blueCyan" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+
+    <linearGradient id="emeraldTeal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+
+    <radialGradient id="ambientGlow" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.25" />
+      <stop offset="50%" stop-color="#06b6d4" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+
+    <pattern id="dotPattern" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="rgba(255, 255, 255, 0.08)" />
+    </pattern>
+
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#000000" flood-opacity="0.65" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)" />
+  <rect width="1200" height="630" fill="url(#dotPattern)" />
+  <circle cx="600" cy="300" r="480" fill="url(#ambientGlow)" />
+
+  <!-- Main Terminal Mockup Window -->
+  <g transform="translate(140, 70)" filter="url(#shadow)">
+    <!-- Window Frame -->
+    <rect width="920" height="490" rx="14" fill="#0b0f19" stroke="#1e293b" stroke-width="2" />
+
+    <!-- Window Titlebar -->
+    <rect width="920" height="44" rx="14" fill="#111827" />
+    <rect y="30" width="920" height="14" fill="#111827" />
+    <line x1="0" y1="44" x2="920" y2="44" stroke="#1f293d" stroke-width="1.5" />
+
+    <!-- macOS Window Dots -->
+    <circle cx="24" cy="22" r="6" fill="#ef4444" opacity="0.8" />
+    <circle cx="44" cy="22" r="6" fill="#f59e0b" opacity="0.8" />
+    <circle cx="64" cy="22" r="6" fill="#10b981" opacity="0.8" />
+
+    <!-- Window Title -->
+    <text x="460" y="27" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', monospace" font-size="13" font-weight="500" text-anchor="middle">vivasvan — tmux: main [nvim]</text>
+
+    <!-- Tmux Status Bar at the Top of Terminal Buffer -->
+    <g transform="translate(16, 56)">
+      <rect width="888" height="28" rx="4" fill="#172033" />
+      <!-- Session Pill -->
+      <rect width="80" height="28" rx="4" fill="#3b82f6" />
+      <text x="40" y="19" fill="#0a0c10" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">dev ⚡</text>
+
+      <!-- Windows Tabs -->
+      <text x="105" y="18" fill="#93c5fd" font-family="monospace" font-size="12" font-weight="bold">1:nvim*</text>
+      <text x="185" y="18" fill="#64748b" font-family="monospace" font-size="12">2:server</text>
+      <text x="265" y="18" fill="#64748b" font-family="monospace" font-size="12">3:runner</text>
+      <text x="345" y="18" fill="#64748b" font-family="monospace" font-size="12">4:logs 🔔</text>
+
+      <!-- Right status -->
+      <text x="872" y="18" fill="#38bdf8" font-family="monospace" font-size="11" text-anchor="end">ZOOM • macbook-pro</text>
+    </g>
+
+    <!-- Neovim Split Layout -->
+    <!-- Left Pane: Code Buffer -->
+    <g transform="translate(16, 96)">
+      <rect width="570" height="376" rx="4" fill="#0d1322" stroke="#1e293b" stroke-width="1" />
+      <!-- Code lines mock -->
+      <text x="24" y="32" fill="#818cf8" font-family="monospace" font-size="13">local<tspan fill="#e2e8f0"> copy_location = </tspan><tspan fill="#38bdf8">require</tspan><tspan fill="#e2e8f0">(</tspan><tspan fill="#34d399">"util.copy_location"</tspan><tspan fill="#e2e8f0">)</tspan></text>
+      <text x="24" y="60" fill="#64748b" font-family="monospace" font-size="13">-- Astro-fast AST file diffing via Snacks picker</text>
+      <text x="24" y="88" fill="#818cf8" font-family="monospace" font-size="13">vim.keymap.<tspan fill="#38bdf8">set</tspan><tspan fill="#e2e8f0">(</tspan><tspan fill="#34d399">"n"</tspan><tspan fill="#e2e8f0">, </tspan><tspan fill="#34d399">"&lt;leader&gt;dp"</tspan><tspan fill="#e2e8f0">, </tspan><tspan fill="#f59e0b">":diffput&lt;CR&gt;"</tspan><tspan fill="#e2e8f0">)</tspan></text>
+      <text x="24" y="116" fill="#818cf8" font-family="monospace" font-size="13">vim.keymap.<tspan fill="#38bdf8">set</tspan><tspan fill="#e2e8f0">(</tspan><tspan fill="#34d399">"n"</tspan><tspan fill="#e2e8f0">, </tspan><tspan fill="#34d399">"&lt;leader&gt;do"</tspan><tspan fill="#e2e8f0">, </tspan><tspan fill="#f59e0b">":diffget&lt;CR&gt;"</tspan><tspan fill="#e2e8f0">)</tspan></text>
+
+      <rect x="24" y="146" width="522" height="120" rx="6" fill="#131b2e" stroke="#3b82f6" stroke-width="1" opacity="0.9" />
+      <text x="40" y="176" fill="#38bdf8" font-family="monospace" font-size="12" font-weight="bold">⚡ blink.cmp + supermaven</text>
+      <text x="40" y="202" fill="#94a3b8" font-family="monospace" font-size="12">1  difftastic_selected(picker)   <tspan fill="#64748b">[AST Diff]</tspan></text>
+      <text x="40" y="226" fill="#38bdf8" font-family="monospace" font-size="12">2  vimdiff_selected(picker)      <tspan fill="#64748b">[Native Diff]</tspan></text>
+      <text x="40" y="250" fill="#94a3b8" font-family="monospace" font-size="12">3  copy_relative_with_line(true) <tspan fill="#64748b">[GitHub L42-58]</tspan></text>
+
+      <!-- Statusline -->
+      <rect y="352" width="570" height="24" fill="#17223b" />
+      <text x="16" y="368" fill="#38bdf8" font-family="monospace" font-size="11" font-weight="bold">NORMAL  lua/config/keymaps.lua  utf-8 </text>
+      <text x="554" y="368" fill="#64748b" font-family="monospace" font-size="11" text-anchor="end">78:14 [LazyVim]</text>
+    </g>
+
+    <!-- Right Pane: Terminal / REPL / Difftastic preview -->
+    <g transform="translate(598, 96)">
+      <rect width="306" height="376" rx="4" fill="#090d17" stroke="#1e293b" stroke-width="1" />
+      <text x="16" y="30" fill="#34d399" font-family="monospace" font-size="12">$ difft --display=side-by-side</text>
+      <text x="16" y="58" fill="#64748b" font-family="monospace" font-size="11">--- a/src/pipeline.py</text>
+      <text x="16" y="76" fill="#64748b" font-family="monospace" font-size="11">+++ b/src/pipeline.py</text>
+
+      <!-- Diff lines mockup -->
+      <rect x="16" y="94" width="274" height="22" rx="3" fill="#2d1515" />
+      <text x="24" y="110" fill="#f87171" font-family="monospace" font-size="11">- def process(raw_tensor):</text>
+
+      <rect x="16" y="122" width="274" height="22" rx="3" fill="#14311e" />
+      <text x="24" y="138" fill="#4ade80" font-family="monospace" font-size="11">+ def process(spatial_tensor):</text>
+
+      <text x="16" y="174" fill="#64748b" font-family="monospace" font-size="11">1 hunk, 2 lines modified</text>
+      <text x="16" y="210" fill="#38bdf8" font-family="monospace" font-size="11">tmux-resurrect: state saved ✓</text>
+      <text x="16" y="238" fill="#a78bfa" font-family="monospace" font-size="11">[prefix: C-Space | exit: &lt;C-k&gt;]</text>
+    </g>
+  </g>
+
+  <!-- Accent Badges in Bottom Corners -->
+  <g transform="translate(140, 580)">
+    <rect width="180" height="32" rx="16" fill="rgba(30, 41, 59, 0.7)" stroke="#334155" stroke-width="1" />
+    <circle cx="16" cy="16" r="5" fill="#38bdf8" />
+    <text x="32" y="21" fill="#e2e8f0" font-family="-apple-system, sans-serif" font-size="13" font-weight="600">Tmux + Neovim Workflow</text>
+  </g>
+</svg>
