@@ -27,8 +27,10 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ZoomableImage } from "@/components/ui/zoomable-image";
 import { cn } from "@/lib/utils";
-import { ExternalLink, Image as ImageIcon, PlayCircle } from "lucide-react";
+import { ExternalLink, Image as ImageIcon, PlayCircle, Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
 
 type Props = {};
 
@@ -36,6 +38,7 @@ type ProjectType = (typeof projects)[0];
 
 const projects = [
   {
+    slug: "pathfinder",
     name: "Pathfinder",
     description: `Pioneer agentic system at Eagleview. Built Eagleview's agentic system for interacting with general data sources and enrichment of EV data with external data sources, extracting actionable insights on top of raw pixels so customers can get the most out of geospatial/aerial data via natural language.
 
@@ -48,6 +51,7 @@ Currently working on embedding image-text data for spatial images, Agentic AI de
     team: "Eagleview AI / MLOps Team",
   },
   {
+    slug: "klens",
     name: "K|Lens GmbH",
     description: `At K|Lens GmbH, I contributed to the development of the company's innovative vision system, focusing on depth estimation, real-world semantic segmentation, and object classification. My work involved researching and developing AI algorithms to address complex visual perception challenges, integrating these findings with software solutions, and presenting our research outcomes in industry conferences.`,
     images: ["/imgs/projects/klens/showcase.png"], // Add images showing the technology or conference presentations
@@ -58,6 +62,7 @@ Currently working on embedding image-text data for spatial images, Agentic AI de
     team: "K|Lens R&D Team",
   },
   {
+    slug: "vaato",
     name: "Vaato",
     description: `At Vaato, I spearhead the development of an AI-powered contextual conversation partner designed to revolutionize interview preparation. My role involves:`,
     images: [
@@ -71,6 +76,7 @@ Currently working on embedding image-text data for spatial images, Agentic AI de
     team: "UltimateWorld Team",
   },
   {
+    slug: "global-compass",
     name: "Global Compass",
     description: `As the Lead Software Developer at Global Compass, I was responsible for developing an automated system that helps individuals determine the best immigration program suited to their personal profiles and backgrounds. This involved designing algorithmic solutions to efficiently process and analyze personal data, and collaborating with a multidisciplinary team to ensure system compliance with legal and ethical standards.`,
     images: [
@@ -84,6 +90,7 @@ Currently working on embedding image-text data for spatial images, Agentic AI de
     team: "Greenberg Hameed Group",
   },
   {
+    slug: "archidocx",
     name: "ArchiDocx",
     description: `Single handledly developed an Architecture Project Management System for simple client architect communication and organisation. Client UI has taken inspiration from Google Drive design for easy to learn and use.`,
     images: [
@@ -99,6 +106,7 @@ Currently working on embedding image-text data for spatial images, Agentic AI de
     team: "Lavingya Consulatants",
   },
   {
+    slug: "polar-project",
     name: "PolarProject",
     description: `Build a project showcase website for an non-profit organization. The website showcase an unique, innovative, futuristic 3d design. `,
     images: [
@@ -116,7 +124,38 @@ Currently working on embedding image-text data for spatial images, Agentic AI de
 ];
 
 function Projects({}: Props) {
-  const [selectedProject, setSelectedProject] = useState<ProjectType | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const projectParam = searchParams.get("project")?.toLowerCase();
+
+  const selectedProject =
+    projects.find(
+      (project) =>
+        project.slug.toLowerCase() === projectParam ||
+        project.name.toLowerCase() === projectParam ||
+        project.name.toLowerCase().replace(/[^a-z0-9]+/g, "-") === projectParam
+    ) ?? null;
+
+  useEffect(() => {
+    if (selectedProject) {
+      const prevTitle = document.title;
+      document.title = `${selectedProject.name} | Projects | Vivasvan`;
+      return () => {
+        document.title = prevTitle;
+      };
+    }
+  }, [selectedProject]);
+
+  const handleOpenProject = (project: ProjectType) => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set("project", project.slug);
+    setSearchParams(nextParams);
+  };
+
+  const handleCloseProject = () => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete("project");
+    setSearchParams(nextParams);
+  };
 
   return (
     <>
@@ -130,7 +169,7 @@ function Projects({}: Props) {
               key={project.name}
               project={project}
               onOpen={() => {
-                setSelectedProject(project);
+                handleOpenProject(project);
               }}
             />
           ))}
@@ -140,7 +179,7 @@ function Projects({}: Props) {
         project={selectedProject}
         onOpenChange={(isOpen) => {
           if (!isOpen) {
-            setSelectedProject(null);
+            handleCloseProject();
           }
         }}
       />
@@ -304,6 +343,28 @@ function ProjectModal({ project, onOpenChange }: ModalProps) {
     }
   }, [project, carouselApi]);
 
+  const handleShare = () => {
+    if (!project) return;
+    const url = window.location.href;
+    if (navigator.share) {
+      navigator
+        .share({
+          title: `${project.name} | Vivasvan Patel`,
+          url,
+        })
+        .catch(() => {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard
+        .writeText(url)
+        .then(() => {
+          toast.success("Link copied to clipboard!");
+        })
+        .catch(() => {
+          toast.error("Failed to copy link.");
+        });
+    }
+  };
+
   const renderVideos = () => {
     if (!project || !project.videos || project.videos.length === 0) return null;
     const currentVideo = project.videos[selectedVideoIndex] ?? project.videos[0];
@@ -401,22 +462,47 @@ function ProjectModal({ project, onOpenChange }: ModalProps) {
         {project ? (
           <div className="space-y-6">
             <DialogHeader className="pr-10">
-              <DialogTitle className="flex items-center gap-4 text-2xl font-medium">
-                <Avatar className="border text-base">
-                  <AvatarImage src={project.logo} alt={`${project.name} logo`} />
-                  <AvatarFallback>
-                    {project.name.at(0)?.toUpperCase() ?? "A"}
-                  </AvatarFallback>
-                </Avatar>
-                {project.name}
-              </DialogTitle>
-              <DialogDescription className="flex flex-wrap items-center gap-2 pt-1 text-sm">
-                <span className="rounded-md border bg-muted/60 px-2 py-0.5 text-xs font-medium text-foreground">
-                  {project.team}
-                </span>
-                <span className="text-muted-foreground">•</span>
-                <span className="text-muted-foreground">{project.time}</span>
-              </DialogDescription>
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <DialogTitle className="flex items-center gap-4 text-2xl font-medium">
+                    <Avatar className="border text-base">
+                      <AvatarImage src={project.logo} alt={`${project.name} logo`} />
+                      <AvatarFallback>
+                        {project.name.at(0)?.toUpperCase() ?? "A"}
+                      </AvatarFallback>
+                    </Avatar>
+                    {project.name}
+                  </DialogTitle>
+                  <DialogDescription className="flex flex-wrap items-center gap-2 pt-1 text-sm">
+                    <span className="rounded-md border bg-muted/60 px-2 py-0.5 text-xs font-medium text-foreground">
+                      {project.team}
+                    </span>
+                    <span className="text-muted-foreground">•</span>
+                    <span className="text-muted-foreground">{project.time}</span>
+                  </DialogDescription>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleShare}
+                    className="gap-2"
+                  >
+                    <Share2 className="h-4 w-4" />
+                    Share
+                  </Button>
+                  {projectLink && (
+                    <Button size="sm" asChild>
+                      <a href={projectLink} target="_blank" rel="noreferrer">
+                        Visit Project
+                        <ExternalLink className="ml-2 h-4 w-4" />
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              </div>
             </DialogHeader>
 
             {hasVideos && hasImages ? (
@@ -452,16 +538,6 @@ function ProjectModal({ project, onOpenChange }: ModalProps) {
               <p className="whitespace-pre-line text-sm leading-7 text-muted-foreground">
                 {project.description}
               </p>
-              {projectLink && (
-                <div className="flex justify-end pt-2">
-                  <Button asChild>
-                    <a href={projectLink} target="_blank" rel="noreferrer">
-                      Visit Project
-                      <ExternalLink className="ml-2 h-4 w-4" />
-                    </a>
-                  </Button>
-                </div>
-              )}
             </div>
           </div>
         ) : null}
